@@ -1,0 +1,74 @@
+# ========================================
+# v4_config.yaml
+# Llama-3 Korean QLoRA Fine-tuning
+# ========================================
+
+general:
+  data_path: ./
+  model_name: beomi/Llama-3-Open-Ko-8B
+  output_dir: ./checkpoints_v4_llama
+
+tokenizer:
+  max_length: 1024  # 충분히 크게
+  prompt_template: |
+    다음 대화를 한 문장으로 요약하세요.
+    
+    {dialogue}
+    
+    요약:
+
+training:
+  overwrite_output_dir: true
+  num_train_epochs: 5
+  learning_rate: 3e-5         # 더 낮게 (안정적)
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4
+  warmup_ratio: 0.1
+  weight_decay: 0.01
+  lr_scheduler_type: cosine
+  optim: paged_adamw_32bit
+  
+  eval_strategy: steps
+  eval_steps: 100
+  save_strategy: steps
+  save_steps: 100
+  save_total_limit: 5         # 더 많이 보관
+  load_best_model_at_end: true
+  metric_for_best_model: eval_loss
+  greater_is_better: false
+  
+  fp16: true
+  group_by_length: true
+  gradient_checkpointing: true
+  report_to: wandb
+
+lora:
+  r: 8                        # 작게 (과적합 방지)
+  lora_alpha: 16
+  lora_dropout: 0.05
+  bias: none
+  task_type: CAUSAL_LM
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+
+wandb:
+  entity: imeanseo_
+  project: dialogue-summarization
+  name: v4-imeanseo-llama3-korean-8b
+
+inference:
+  batch_size: 8
+  max_new_tokens: 100
+  temperature: 0.3
+  num_beams: 1
+  top_p: 0.9
+  top_k: 50
+  repetition_penalty: 1.3
+  do_sample: False
