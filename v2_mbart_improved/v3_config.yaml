@@ -1,0 +1,84 @@
+# ========================================
+# v3_config.yaml (v3.2 개선판)
+# Solar-10.7B QLoRA Fine-tuning - Optimized
+# ========================================
+
+
+general:
+  data_path: ./
+  model_name: Upstage/SOLAR-10.7B-Instruct-v1.0
+  output_dir: ./checkpoints_v3_improved
+
+
+tokenizer:
+  max_length: 1024
+  prompt_template: |
+    ### Instruction:
+    다음 대화를 한 문장으로 요약하세요. 요약문만 작성하고 다른 내용은 포함하지 마세요.
+    
+    ### Input:
+    {dialogue}
+    
+    ### Response:
+    
+
+training:
+  overwrite_output_dir: true
+  num_train_epochs: 5            # 3 → 5 (충분한 학습)
+  learning_rate: 5e-5            # 2e-4 → 5e-5 (안정적 학습)
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4
+  warmup_ratio: 0.1              # 0.03 → 0.1 (천천히 워밍업)
+  weight_decay: 0.01             # 0.001 → 0.01 (과적합 방지)
+  lr_scheduler_type: cosine
+  optim: paged_adamw_32bit
+  
+  # 평가 및 저장
+  eval_strategy: steps
+  eval_steps: 100                # 200 → 100 (더 자주 평가)
+  save_strategy: steps
+  save_steps: 100
+  save_total_limit: 3            # 2 → 3 (더 많은 체크포인트 보관)
+  load_best_model_at_end: true
+  metric_for_best_model: eval_loss
+  greater_is_better: false
+  
+  # 효율성
+  fp16: true
+  group_by_length: true
+  gradient_checkpointing: true
+  report_to: wandb
+
+
+lora:
+  r: 16                          # 64 → 16 (안정적 학습)
+  lora_alpha: 32                 # 16 → 32 (r과 비율 맞춤)
+  lora_dropout: 0.05             # 0.1 → 0.05 (과적합 방지)
+  bias: none
+  task_type: CAUSAL_LM
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+
+
+wandb:
+  entity: imeanseo_
+  project: dialogue-summarization
+  name: v3.2-imeanseo-solar-qlora-improved
+
+
+inference:
+  batch_size: 8
+  max_new_tokens: 100
+  temperature: 0.3
+  num_beams: 1
+  top_p: 0.9
+  top_k: 50
+  repetition_penalty: 1.3
+  do_sample: False
