@@ -153,7 +153,7 @@ print("=" * 60)
 
 
 # 1. Config & 설정
-with open('./v4_config.yaml', 'r', encoding='utf-8') as f:
+with open('./v3_config.yaml', 'r', encoding='utf-8') as f:
     config = yaml.safe_load(f)
 
 # ★★★ Adapter 경로 자동 탐색 ★★★
