@@ -23,7 +23,7 @@ print("=" * 60)
 # ========================================
 
 print("\n📖 Config 불러오기...")
-config_path = './v2_config.yaml'
+config_path = 'config.yaml'
 
 with open(config_path, 'r', encoding='utf-8') as file:
     config = yaml.safe_load(file)
