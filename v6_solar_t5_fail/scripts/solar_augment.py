@@ -69,7 +69,7 @@ def solar_real_data_fewshot_prompt(dialogue, topic, real_examples):
 요약:"""
 
 
-API_KEY = "up_VYyaUcCHj8rUfO98nxjhF1mvRPiD1"
+API_KEY = "secret" 
 API_URL = "https://api.upstage.ai/v1/chat/completions"
 MODEL_NAME = "solar-pro2"
 
