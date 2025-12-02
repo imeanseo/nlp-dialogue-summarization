@@ -1,0 +1,35 @@
+output_dir: "checkpoints/t5_optuna"
+save_strategy: "epoch"
+save_total_limit: 2
+load_best_model_at_end: true
+metric_for_best_model: "rouge"
+greater_is_better: true
+
+# 기본 학습 설정 (메모리 최적화 핵심!)
+per_device_train_batch_size: 1
+per_device_eval_batch_size: 1    # ← 이거 추가 (핵심1!)
+num_train_epochs: 3
+weight_decay: 0.01
+warmup_steps: 100
+
+# 로깅 / 평가 / 저장 전략
+evaluation_strategy: "epoch"
+logging_strategy: "steps"
+logging_steps: 500
+
+# 메모리 최적화 설정 (33% 멈춤 해결!)
+gradient_accumulation_steps: 8
+fp16: true                       # ← false → true (핵심2!)
+gradient_checkpointing: true     # ← 이거 추가 (핵심3!)
+dataloader_pin_memory: false     # ← 이거 추가 (핵심4!)
+
+max_grad_norm: 1.0
+label_smoothing_factor: 0.1
+
+report_to: "wandb"
+run_name: "v6-t5-imeanseo-large-solar"
+
+wandb:
+  entity: "imeanseo_"
+  project: "dialogue-summarization"
+logging_dir: "logs/t5_optuna"

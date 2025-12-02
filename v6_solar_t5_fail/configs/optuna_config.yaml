@@ -1,0 +1,31 @@
+# configs/optuna_config.yaml
+
+# 먼저 파이프라인 점검용으로 2~3 트라이얼만
+n_trials: 3
+
+search_space:
+  learning_rate:
+    type: float
+    low: 3e-5      # 너무 작은 lr은 피하고
+    high: 1e-4
+    log: true
+
+  per_device_train_batch_size:
+    type: categorical
+    values: [1, 2]   # 메모리 불안하면 [1]만으로 시작해도 됨
+
+  num_train_epochs:
+    type: int
+    low: 2
+    high: 3          # 일단 짧게 돌려보기
+
+  warmup_steps:
+    type: int
+    low: 0
+    high: 200
+
+    
+  weight_decay:
+    type: float
+    low: 0.0
+    high: 0.1   
